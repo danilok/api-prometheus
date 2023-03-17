@@ -1,0 +1,25 @@
+version: '3.8'
+
+networks:
+  prom-network:
+    external: true
+
+services:
+  adonis_app:
+    container_name: api-prometheus
+    restart: always
+    build:
+      context: .
+      target: dependencies
+    ports:
+      - ${PORT}:${PORT}
+      - 9229:9229
+    env_file:
+      - .env
+    volumes:
+      - ./:/home/node/app
+      # Uncomment the below line if you developing on MacOS
+      #- /home/node/app/node_modules
+    networks:
+      - prom-network
+    command: dumb-init node ace serve --watch --node-args="--inspect=0.0.0.0"
